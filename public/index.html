@@ -97,7 +97,7 @@
 
         .hero {
             text-align: center;
-            padding: 5rem 0 3rem;
+            padding: 5rem 0 1.5rem;
         }
 
         .hero__title {
@@ -105,7 +105,7 @@
             font-size: 5.4rem;
             font-weight: 900;
             line-height: 1.1;
-            margin-bottom: 1.2rem;
+            margin-bottom: 0.8rem;
             animation: fadeInUp 0.6s ease-out 0.1s both;
         }
 
@@ -113,8 +113,16 @@
             background: linear-gradient(135deg, #6366f1, #22d3ee, #a78bfa);
             background-size: 200% 200%;
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: gradientShift 5s ease infinite;
+        }
+
+        .hero__subtitle {
+            font-size: 1.5rem;
+            color: #64748b;
+            font-weight: 400;
+            animation: fadeInUp 0.6s ease-out 0.2s both;
         }
 
         @keyframes gradientShift {
@@ -127,13 +135,71 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            margin: 3rem 0 1.2rem;
+            padding: 1.4rem 1.8rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 1.4rem;
+            animation: fadeInUp 0.6s ease-out 0.25s both;
+        }
+
+        .filter-bar__label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-right: 0.4rem;
+        }
+
+        .filter-chip {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            padding: 0.6rem 1.4rem;
+            border-radius: 10rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.04);
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .filter-chip:hover {
+            background: rgba(99, 102, 241, 0.12);
+            border-color: rgba(99, 102, 241, 0.3);
+            color: #c7d2fe;
+        }
+
+        .filter-chip.active {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: #6366f1;
+            color: #e0e7ff;
+        }
+
+        .filter-chip--divider {
+            width: 1px;
+            height: 2rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: none;
+            padding: 0;
+            margin: 0 0.4rem;
+            cursor: default;
+        }
+
         .toolbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 1.6rem;
-            margin: 4rem 0 2.4rem;
+            margin: 1.8rem 0 2.4rem;
             animation: fadeInUp 0.6s ease-out 0.3s both;
         }
 
@@ -145,6 +211,16 @@
         .toolbar__info strong {
             color: #a5b4fc;
             font-weight: 700;
+        }
+
+        .toolbar__active-route {
+            font-size: 1.15rem;
+            color: #475569;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 0.4rem 1rem;
+            border-radius: 0.6rem;
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
 
         .btn {
@@ -294,6 +370,7 @@
             margin-bottom: 1.4rem;
             display: -webkit-box;
             -webkit-line-clamp: 2;
+            line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
@@ -304,10 +381,6 @@
             gap: 0.6rem;
             font-size: 1.2rem;
             color: #94a3b8;
-        }
-
-        .card__meta-icon {
-            font-size: 1.4rem;
         }
 
         .card__footer {
@@ -324,6 +397,7 @@
             font-weight: 700;
             background: linear-gradient(135deg, #22d3ee, #6366f1);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -339,9 +413,9 @@
         }
 
         .empty-state__icon {
-            font-size: 6rem;
+            font-size: 4.8rem;
             margin-bottom: 2rem;
-            opacity: 0.4;
+            opacity: 0.3;
         }
 
         .empty-state__title {
@@ -494,10 +568,6 @@
         .toast--error { border-left: 4px solid #ef4444; }
         .toast--warning { border-left: 4px solid #fbbf24; }
 
-        .toast__icon {
-            font-size: 1.8rem;
-        }
-
         @keyframes slideInRight {
             from { opacity: 0; transform: translateX(40px); }
             to { opacity: 1; transform: translateX(0); }
@@ -589,6 +659,7 @@
             font-weight: 700;
             background: linear-gradient(135deg, #22d3ee, #6366f1);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -629,6 +700,7 @@
             .products-grid { grid-template-columns: 1fr; }
             .form-row { grid-template-columns: 1fr; }
             .toolbar { flex-direction: column; align-items: stretch; }
+            .filter-bar { gap: 0.6rem; }
             .cursor-glow { display: none; }
         }
     </style>
@@ -654,7 +726,7 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="productPrice">Price (₱)</label>
+                        <label for="productPrice">Price (&#8369;)</label>
                         <input type="number" id="productPrice" placeholder="e.g. 2500" min="1" required>
                     </div>
                     <div class="form-group">
@@ -667,7 +739,7 @@
                             <option value="Books">Books</option>
                             <option value="Sports">Sports</option>
                             <option value="Furniture">Furniture</option>
-                            <option value="Home & Garden">Home & Garden</option>
+                            <option value="Home &amp; Garden">Home &amp; Garden</option>
                             <option value="Other">Other</option>
                         </select>
                     </div>
@@ -686,7 +758,7 @@
 
                 <div class="modal__actions">
                     <button type="button" class="btn btn--ghost" onclick="closeAddModal()">Cancel</button>
-                    <button type="submit" class="btn btn--success">✨ Add Product</button>
+                    <button type="submit" class="btn btn--success">Add Product</button>
                 </div>
             </form>
         </div>
@@ -699,14 +771,37 @@
     <div class="wrapper">
         <section class="hero">
             <h1 class="hero__title">Welcome to <span>Local Marketplace</span> API</h1>
+            <p class="hero__subtitle">Browse, filter, and manage products with advanced API queries</p>
         </section>
 
+        <div class="filter-bar" id="filterBar">
+            <span class="filter-bar__label">Filter</span>
+            <button class="filter-chip active" data-query="" data-label="All Products">All Products</button>
+            <span class="filter-chip--divider"></span>
+            <button class="filter-chip" data-query="/top-3-cheap" data-label="Top 3 Cheap (Alias)">Top 3 Cheap</button>
+            <button class="filter-chip" data-query="?sort=price" data-label="sort=price">Cheapest First</button>
+            <button class="filter-chip" data-query="?sort=-price" data-label="sort=-price">Most Expensive</button>
+            <span class="filter-chip--divider"></span>
+            <button class="filter-chip" data-query="?category=Electronics" data-label="category=Electronics">Electronics</button>
+            <button class="filter-chip" data-query="?category=Fashion" data-label="category=Fashion">Fashion</button>
+            <button class="filter-chip" data-query="?price[gte]=1000" data-label="price[gte]=1000">Price &ge; 1000</button>
+            <span class="filter-chip--divider"></span>
+            <button class="filter-chip" data-query="?fields=name,price" data-label="fields=name,price">Name &amp; Price Only</button>
+            <button class="filter-chip" data-query="?page=1&limit=5" data-label="page=1&amp;limit=5">Page 1 (5)</button>
+            <button class="filter-chip" data-query="?page=2&limit=5" data-label="page=2&amp;limit=5">Page 2 (5)</button>
+            <span class="filter-chip--divider"></span>
+            <button class="filter-chip" data-query="/product-category" data-label="Aggregation Pipeline">Category Stats</button>
+        </div>
+
         <div class="toolbar">
-            <p class="toolbar__info">
-                Showing <strong id="productCount">0</strong> products in the marketplace
-            </p>
+            <div>
+                <p class="toolbar__info">
+                    Showing <strong id="productCount">0</strong> products in the marketplace
+                </p>
+                <code class="toolbar__active-route" id="activeRoute">GET /api/products</code>
+            </div>
             <button class="btn btn--primary" id="addProductBtn" onclick="openAddModal()">
-                ＋ Add Product
+                + Add Product
             </button>
         </div>
 
@@ -720,25 +815,16 @@
     <footer>Sebastian Angelo Meer's Marketplace</footer>
 
     <script>
-        const API_URL = '/api/v1/products';
+        const API_URL = '/api/products';
         const productsGrid = document.getElementById('productsGrid');
         const productCount = document.getElementById('productCount');
+        const activeRoute = document.getElementById('activeRoute');
         const addModal = document.getElementById('addModal');
         const detailModal = document.getElementById('detailModal');
         const detailContent = document.getElementById('detailContent');
         const addProductForm = document.getElementById('addProductForm');
         const toastContainer = document.getElementById('toastContainer');
-
-        const categoryIcons = {
-            'Electronics': '💻',
-            'Music': '🎸',
-            'Fashion': '👜',
-            'Books': '📚',
-            'Sports': '🚴',
-            'Furniture': '🪑',
-            'Home & Garden': '🌿',
-            'Other': '📦',
-        };
+        const filterBar = document.getElementById('filterBar');
 
         const categoryColors = {
             'Electronics': 'rgba(99, 102, 241, 0.15)',
@@ -752,24 +838,106 @@
         };
 
         function formatPrice(price) {
-            return '₱' + Number(price).toLocaleString();
+            return '\u20B1' + Number(price).toLocaleString();
         }
 
         function showToast(message, type = 'success') {
-            const icons = { success: '✅', error: '❌', warning: '⚠️' };
             const toast = document.createElement('div');
             toast.className = `toast toast--${type}`;
-            toast.innerHTML = `
-                <span class="toast__icon">${icons[type]}</span>
-                <span>${message}</span>
-            `;
+            toast.innerHTML = `<span>${message}</span>`;
             toastContainer.appendChild(toast);
             setTimeout(() => toast.remove(), 3200);
         }
 
-        async function fetchProducts() {
+        filterBar.addEventListener('click', (e) => {
+            const chip = e.target.closest('.filter-chip');
+            if (!chip || chip.classList.contains('filter-chip--divider')) return;
+
+            filterBar.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+
+            const query = chip.dataset.query;
+            const label = chip.dataset.label;
+
+            if (query === '/product-category') {
+                activeRoute.textContent = `GET /api/products/product-category`;
+                fetchStats();
+            } else if (query.startsWith('/')) {
+                activeRoute.textContent = `GET /api/products${query}`;
+                fetchProducts(query);
+            } else {
+                activeRoute.textContent = query ? `GET /api/products${query}` : 'GET /api/products';
+                fetchProducts(query);
+            }
+        });
+
+        async function fetchStats() {
             try {
-                const res = await fetch(API_URL);
+                const res = await fetch(`${API_URL}/product-category`);
+                const data = await res.json();
+
+                if (data.status === 'success') {
+                    renderStats(data.data.stats);
+                }
+            } catch (err) {
+                productsGrid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state__icon">!</div>
+                        <h3 class="empty-state__title">Connection Error</h3>
+                        <p class="empty-state__desc">Could not load stats.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderStats(stats) {
+            productCount.textContent = stats.length + ' categories';
+
+            if (stats.length === 0) {
+                productsGrid.innerHTML = `
+                    <div class="empty-state">
+                        <h3 class="empty-state__title">No stats available</h3>
+                        <p class="empty-state__desc">No products under &#8369;1,000 found for aggregation.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            productsGrid.innerHTML = stats.map(stat => `
+                <div class="card" style="cursor: default;">
+                    <div class="card__header">
+                        <span class="card__category" style="background: ${categoryColors[stat._id] || categoryColors['Other']}">
+                            ${stat._id}
+                        </span>
+                        <span class="card__id">${stat.numProducts} product${stat.numProducts > 1 ? 's' : ''}</span>
+                    </div>
+                    <div class="card__body">
+                        <h3 class="card__name">${stat._id} Stats</h3>
+                        <div style="display: grid; gap: 1rem; margin-top: 1.2rem;">
+                            <div style="display: flex; justify-content: space-between; font-size: 1.3rem;">
+                                <span style="color: #64748b;">Average Price</span>
+                                <span style="color: #a5b4fc; font-weight: 700;">${formatPrice(Math.round(stat.avgPrice))}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 1.3rem;">
+                                <span style="color: #64748b;">Min Price</span>
+                                <span style="color: #22c55e; font-weight: 700;">${formatPrice(stat.minPrice)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 1.3rem;">
+                                <span style="color: #64748b;">Max Price</span>
+                                <span style="color: #f87171; font-weight: 700;">${formatPrice(stat.maxPrice)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card__footer">
+                        <span class="card__price" style="font-size: 1.6rem;">Avg: ${formatPrice(Math.round(stat.avgPrice))}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function fetchProducts(query = '') {
+            try {
+                const res = await fetch(`${API_URL}${query}`);
                 const data = await res.json();
 
                 if (data.status === 'success') {
@@ -778,7 +946,7 @@
             } catch (err) {
                 productsGrid.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state__icon">⚠️</div>
+                        <div class="empty-state__icon">!</div>
                         <h3 class="empty-state__title">Connection Error</h3>
                         <p class="empty-state__desc">Could not load products. Make sure the API server is running.</p>
                     </div>
@@ -792,43 +960,37 @@
             if (products.length === 0) {
                 productsGrid.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state__icon">🛒</div>
-                        <h3 class="empty-state__title">No products yet</h3>
-                        <p class="empty-state__desc">Be the first to list an item on the marketplace!</p>
+                        <h3 class="empty-state__title">No products found</h3>
+                        <p class="empty-state__desc">Try a different filter or add a new product.</p>
                     </div>
                 `;
                 return;
             }
 
             productsGrid.innerHTML = products.map(product => {
-                const icon = categoryIcons[product.category] || '📦';
                 const catBg = categoryColors[product.category] || categoryColors['Other'];
 
                 return `
-                    <div class="card" onclick="viewProduct(${product.id})" onmousemove="tiltCard(event, this)" onmouseleave="resetCard(this)">
+                    <div class="card" onclick="viewProduct('${product._id || product.id}')" onmousemove="tiltCard(event, this)" onmouseleave="resetCard(this)">
                         <div class="card__shine"></div>
                         <div class="card__header">
                             <span class="card__category" style="background: ${catBg}">
-                                ${icon} ${product.category}
+                                ${product.category}
                             </span>
-                            <span class="card__id">#${product.id}</span>
                         </div>
                         <div class="card__body">
                             <h3 class="card__name">${product.name}</h3>
-                            <p class="card__description">${product.description}</p>
-                            <div class="card__meta">
-                                <span class="card__meta-icon">👤</span>
-                                <span>${product.seller}</span>
-                            </div>
+                            ${product.description ? `<p class="card__description">${product.description}</p>` : ''}
+                            ${product.seller ? `<div class="card__meta"><span>${product.seller}</span></div>` : ''}
                         </div>
                         <div class="card__footer">
                             <span class="card__price">${formatPrice(product.price)}</span>
                             <div class="card__actions" onclick="event.stopPropagation()">
-                                <button class="btn btn--warning btn--sm" onclick="updateProduct(${product.id})">
-                                    ✏️ Edit
+                                <button class="btn btn--warning btn--sm" onclick="updateProduct('${product._id || product.id}')">
+                                    Edit
                                 </button>
-                                <button class="btn btn--danger btn--sm" onclick="deleteProduct(${product.id})">
-                                    🗑️
+                                <button class="btn btn--danger btn--sm" onclick="deleteProduct('${product._id || product.id}')">
+                                    Delete
                                 </button>
                             </div>
                         </div>
@@ -868,11 +1030,10 @@
 
                 if (data.status === 'success') {
                     const p = data.data.product;
-                    const icon = categoryIcons[p.category] || '📦';
 
                     detailContent.innerHTML = `
                         <div class="detail__header">
-                            <h2 class="detail__name">${icon} ${p.name}</h2>
+                            <h2 class="detail__name">${p.name}</h2>
                             <button class="detail__close" onclick="closeDetailModal()">&times;</button>
                         </div>
 
@@ -888,10 +1049,16 @@
                             <span class="detail__label">Description</span>
                             <span class="detail__value">${p.description}</span>
                         </div>
+                        ${p.daysPosted !== null && p.daysPosted !== undefined ? `
                         <div class="detail__row">
-                            <span class="detail__label">Product ID</span>
-                            <span class="detail__value">#${p.id}</span>
-                        </div>
+                            <span class="detail__label">Days Posted</span>
+                            <span class="detail__value">${p.daysPosted} days</span>
+                        </div>` : ''}
+                        ${p.productSlug ? `
+                        <div class="detail__row">
+                            <span class="detail__label">Slug</span>
+                            <span class="detail__value">${p.productSlug}</span>
+                        </div>` : ''}
 
                         <div class="detail__price-box">
                             <div class="detail__price-label">Price</div>
@@ -899,11 +1066,11 @@
                         </div>
 
                         <div class="modal__actions" style="margin-top: 2.4rem;">
-                            <button class="btn btn--warning btn--sm" onclick="updateProduct(${p.id}); closeDetailModal();">
-                                ✏️ Edit Product
+                            <button class="btn btn--warning btn--sm" onclick="updateProduct('${p._id || p.id}'); closeDetailModal();">
+                                Edit Product
                             </button>
-                            <button class="btn btn--danger btn--sm" onclick="deleteProduct(${p.id}); closeDetailModal();">
-                                🗑️ Delete Product
+                            <button class="btn btn--danger btn--sm" onclick="deleteProduct('${p._id || p.id}'); closeDetailModal();">
+                                Delete Product
                             </button>
                         </div>
                     `;
@@ -924,6 +1091,7 @@
                 category: document.getElementById('productCategory').value,
                 description: document.getElementById('productDescription').value.trim(),
                 seller: document.getElementById('productSeller').value.trim(),
+                postedDate: new Date().toISOString(),
             };
 
             try {
@@ -949,11 +1117,11 @@
         });
 
         async function updateProduct(id) {
-            showToast('🚧 Update feature is not yet implemented. Coming soon!', 'warning');
+            showToast('Update feature coming soon.', 'warning');
         }
 
         async function deleteProduct(id) {
-            showToast('🚧 Delete feature is not yet implemented. Coming soon!', 'warning');
+            showToast('Delete feature coming soon.', 'warning');
         }
 
         function openAddModal() {

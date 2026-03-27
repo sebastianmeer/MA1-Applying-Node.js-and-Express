@@ -1,0 +1,157 @@
+[
+    {
+        "name": "Canvas Tote Bag",
+        "price": 199,
+        "category": "Fashion",
+        "description": "Eco-friendly canvas tote with inner pocket.",
+        "rating": 4.1,
+        "seller": "Rosa Mendoza",
+        "postedDate": "2026-02-10",
+        "premiumProducts": false
+    },
+    {
+        "name": "Organic Garden Herb Set",
+        "price": 280,
+        "category": "Home & Garden",
+        "description": "Set of 6 organic herb seedlings for home.",
+        "rating": 4.6,
+        "seller": "Ana Torres",
+        "postedDate": "2026-01-22",
+        "premiumProducts": false
+    },
+    {
+        "name": "Handmade Leather Wallet",
+        "price": 350,
+        "category": "Fashion",
+        "description": "Genuine cowhide bifold wallet with RFID.",
+        "rating": 4.9,
+        "seller": "Carlos Rivera",
+        "postedDate": "2026-03-01",
+        "premiumProducts": false,
+        "priceDiscount": 50
+    },
+    {
+        "name": "JavaScript: The Good Parts",
+        "price": 450,
+        "category": "Books",
+        "description": "Classic JS book by Crockford. Paperback.",
+        "rating": 4.4,
+        "seller": "Marco Reyes",
+        "postedDate": "2026-02-15",
+        "premiumProducts": false
+    },
+    {
+        "name": "Succulent Planter Set",
+        "price": 320,
+        "category": "Home & Garden",
+        "description": "Ceramic planter trio for succulents.",
+        "rating": 4.3,
+        "seller": "Isabel Cruz",
+        "postedDate": "2026-03-05",
+        "premiumProducts": false
+    },
+    {
+        "name": "Beaded Bracelet Pack",
+        "price": 150,
+        "category": "Fashion",
+        "description": "Set of 3 handmade beaded bracelets.",
+        "rating": 4.0,
+        "seller": "Diana Cruz",
+        "postedDate": "2026-01-30",
+        "premiumProducts": false,
+        "priceDiscount": 20
+    },
+    {
+        "name": "Portable Bluetooth Speaker",
+        "price": 950,
+        "category": "Electronics",
+        "description": "Waterproof IPX7 speaker with deep bass.",
+        "rating": 4.5,
+        "seller": "Miguel Santos",
+        "postedDate": "2026-02-28",
+        "premiumProducts": false
+    },
+    {
+        "name": "Arduino Starter Kit",
+        "price": 1200,
+        "category": "Electronics",
+        "description": "Complete Uno R3 kit with sensors & LEDs.",
+        "rating": 4.7,
+        "seller": "Juan Dela Cruz",
+        "postedDate": "2026-01-15",
+        "premiumProducts": false
+    },
+    {
+        "name": "Running Shoes Size 10",
+        "price": 1500,
+        "category": "Sports",
+        "description": "Lightweight mesh running shoes, used 2x.",
+        "rating": 4.2,
+        "seller": "Luis Garcia",
+        "postedDate": "2026-03-12",
+        "premiumProducts": false,
+        "priceDiscount": 200
+    },
+    {
+        "name": "Rattan Coffee Table",
+        "price": 2200,
+        "category": "Furniture",
+        "description": "Handwoven rattan table with glass top.",
+        "rating": 4.6,
+        "seller": "Diana Cruz",
+        "postedDate": "2026-02-05",
+        "premiumProducts": false
+    },
+    {
+        "name": "Wireless Noise-Cancelling Headphones",
+        "price": 2800,
+        "category": "Electronics",
+        "description": "Over-ear BT headphones with ANC, 30hr.",
+        "rating": 4.8,
+        "seller": "Sebastian Angelo Meer",
+        "postedDate": "2026-03-18",
+        "premiumProducts": false
+    },
+    {
+        "name": "Solid Wood Bookshelf",
+        "price": 3200,
+        "category": "Furniture",
+        "description": "4-tier acacia bookshelf, 150cm tall.",
+        "rating": 4.5,
+        "seller": "Patricia Lim",
+        "postedDate": "2026-02-20",
+        "premiumProducts": false
+    },
+    {
+        "name": "Vintage Vinyl Record Player",
+        "price": 4500,
+        "category": "Electronics",
+        "description": "Classic turntable with built-in speakers.",
+        "rating": 4.8,
+        "seller": "Sebastian Angelo Meer",
+        "postedDate": "2026-01-10",
+        "premiumProducts": false,
+        "priceDiscount": 500
+    },
+    {
+        "name": "Mountain Bike 26-inch",
+        "price": 8500,
+        "category": "Sports",
+        "description": "Aluminum frame MTB with 21-speed gears.",
+        "rating": 4.3,
+        "seller": "Maria Santos",
+        "postedDate": "2026-03-20",
+        "premiumProducts": false
+    },
+    {
+        "name": "Limited Edition Smartwatch",
+        "price": 15000,
+        "category": "Electronics",
+        "description": "Premium titanium smartwatch, exclusive.",
+        "rating": 5.0,
+        "seller": "Sebastian Angelo Meer",
+        "postedDate": "2026-03-25",
+        "premiumProducts": true,
+        "priceDiscount": 1000
+    }
+]

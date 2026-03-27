@@ -18,7 +18,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/api/v1/products', productRouter);
+app.use('/api/products', productRouter);
 
 app.use((req, res) => {
     res.status(404).json({

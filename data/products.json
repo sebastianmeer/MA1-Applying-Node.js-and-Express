@@ -1,13 +1,5 @@
 [
     {
-        "id": 1,
-        "name": "Second-hand Laptop",
-        "price": 15000,
-        "category": "Electronics",
-        "description": "Good condition, 8GB RAM, 256GB SSD. Perfect for students and light office work.",
-        "seller": "Juan Dela Cruz"
-    },
-    {
         "id": 2,
         "name": "Vintage Acoustic Guitar",
         "price": 4500,
@@ -70,5 +62,13 @@
         "category": "Other",
         "description": "The most expensive nigg in the world",
         "seller": "Sebastian Angelo Meer"
+    },
+    {
+        "id": 10,
+        "name": "Cool Headphones",
+        "price": 49.99,
+        "category": "Electronics",
+        "description": "Noise cancelling headphones.",
+        "seller": "Sebastian"
     }
 ]

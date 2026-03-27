@@ -1,112 +1,170 @@
-const fs = require('fs');
-const path = require('path');
+const Product = require('../models/productModel');
+const APIFeatures = require('../utils/apiFeatures');
 
-const productsFilePath = path.join(__dirname, '..', 'data', 'products.json');
-let products = JSON.parse(fs.readFileSync(productsFilePath, 'utf-8'));
-
-exports.checkID = (req, res, next, val) => {
-    const id = Number(val);
-    const product = products.find((el) => el.id === id);
-
-    if (!product) {
-        return res.status(404).json({
-            status: 'fail',
-            message: `No product found with ID ${val}. Please check the ID and try again.`,
-        });
-    }
-
-    req.product = product;
-    next();
-};
-
-exports.checkBody = (req, res, next) => {
-    const { name, price, category, description, seller } = req.body;
-
-    const missing = [];
-    if (!name) missing.push('name');
-    if (price === undefined || price === null) missing.push('price');
-    if (!category) missing.push('category');
-    if (!description) missing.push('description');
-    if (!seller) missing.push('seller');
-
-    if (missing.length > 0) {
-        return res.status(400).json({
-            status: 'fail',
-            message: `Missing required field(s): ${missing.join(', ')}. All fields are required to create a product.`,
-        });
-    }
-
-    if (typeof price !== 'number' || price <= 0) {
-        return res.status(400).json({
-            status: 'fail',
-            message: 'Price must be a positive number.',
-        });
-    }
-
-    next();
-};
-
-exports.getAllProducts = (req, res) => {
-    res.status(200).json({
-        status: 'success',
-        requestedAt: req.requestTime,
-        results: products.length,
-        data: {
-            products,
-        },
-    });
-};
-
-exports.getProduct = (req, res) => {
-    res.status(200).json({
-        status: 'success',
-        data: {
-            product: req.product,
-        },
-    });
-};
-
-exports.createProduct = (req, res) => {
-    const newId =
-        products.length > 0 ? Math.max(...products.map((p) => p.id)) + 1 : 1;
-
-    const newProduct = {
-        id: newId,
-        ...req.body,
+exports.aliasTopCheapProducts = (req, res, next) => {
+    req._queryDefaults = {
+        limit: '3',
+        sort: 'price',
+        fields: 'name,price,category,seller',
     };
+    next();
+};
 
-    products.push(newProduct);
+exports.getAllProducts = async (req, res) => {
+    try {
+        const queryString = { ...req.query, ...req._queryDefaults };
 
-    fs.writeFile(productsFilePath, JSON.stringify(products, null, 4), (err) => {
-        if (err) {
-            return res.status(500).json({
-                status: 'error',
-                message: 'Could not save the new product. Please try again.',
+        const features = new APIFeatures(Product.find(), queryString)
+            .filter()
+            .sort()
+            .limitFields()
+            .paginate();
+
+        const products = await features.query;
+
+        res.status(200).json({
+            status: 'success',
+            results: products.length,
+            data: {
+                products,
+            },
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: 'fail',
+            message: err.message,
+        });
+    }
+};
+
+exports.getProduct = async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id);
+
+        if (!product) {
+            return res.status(404).json({
+                status: 'fail',
+                message: 'No product found with that ID',
             });
         }
 
+        res.status(200).json({
+            status: 'success',
+            data: {
+                product,
+            },
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: 'fail',
+            message: err.message,
+        });
+    }
+};
+
+exports.createProduct = async (req, res) => {
+    try {
+        const newProduct = await Product.create(req.body);
+
         res.status(201).json({
             status: 'success',
-            message: 'Product created successfully!',
             data: {
                 product: newProduct,
             },
         });
-    });
+    } catch (err) {
+        res.status(400).json({
+            status: 'fail',
+            message: err.message,
+        });
+    }
 };
 
-exports.updateProduct = (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message:
-            'This route is not yet implemented. Update functionality coming soon!',
-    });
+exports.updateProduct = async (req, res) => {
+    try {
+        const product = await Product.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            {
+                new: true,
+                runValidators: true,
+            }
+        );
+
+        if (!product) {
+            return res.status(404).json({
+                status: 'fail',
+                message: 'No product found with that ID',
+            });
+        }
+
+        res.status(200).json({
+            status: 'success',
+            data: {
+                product,
+            },
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: 'fail',
+            message: err.message,
+        });
+    }
 };
 
-exports.deleteProduct = (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message:
-            'This route is not yet implemented. Delete functionality coming soon!',
-    });
+exports.deleteProduct = async (req, res) => {
+    try {
+        const product = await Product.findByIdAndDelete(req.params.id);
+
+        if (!product) {
+            return res.status(404).json({
+                status: 'fail',
+                message: 'No product found with that ID',
+            });
+        }
+
+        res.status(204).json({
+            status: 'success',
+            data: null,
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: 'fail',
+            message: err.message,
+        });
+    }
+};
+
+exports.getProductCategoryStats = async (req, res) => {
+    try {
+        const stats = await Product.aggregate([
+            {
+                $match: { price: { $lt: 1000 } },
+            },
+            {
+                $group: {
+                    _id: '$category',
+                    numProducts: { $sum: 1 },
+                    avgPrice: { $avg: '$price' },
+                    minPrice: { $min: '$price' },
+                    maxPrice: { $max: '$price' },
+                },
+            },
+            {
+                $sort: { avgPrice: 1 },
+            },
+        ]);
+
+        res.status(200).json({
+            status: 'success',
+            data: {
+                stats,
+            },
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: 'fail',
+            message: err.message,
+        });
+    }
 };
