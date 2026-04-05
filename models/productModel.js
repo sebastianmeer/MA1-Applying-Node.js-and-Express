@@ -52,6 +52,10 @@ const productSchema = new mongoose.Schema(
                 message: 'Discount price ({VALUE}) should be below the regular price',
             },
         },
+        image: {
+            type: String,
+            default: 'https://placehold.co/400x300/e2e8f0/64748b?text=No+Image',
+        },
     },
     {
         timestamps: true,

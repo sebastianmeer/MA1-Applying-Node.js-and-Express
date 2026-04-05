@@ -7,7 +7,8 @@
         "rating": 4.1,
         "seller": "Rosa Mendoza",
         "postedDate": "2026-02-10",
-        "premiumProducts": false
+        "premiumProducts": false,
+        "image": "https://picsum.photos/seed/canvas-tote/400/300"
     },
     {
         "name": "Organic Garden Herb Set",
@@ -17,7 +18,8 @@
         "rating": 4.6,
         "seller": "Ana Torres",
         "postedDate": "2026-01-22",
-        "premiumProducts": false
+        "premiumProducts": false,
+        "image": "https://picsum.photos/seed/herb-garden/400/300"
     },
     {
         "name": "Handmade Leather Wallet",
@@ -28,7 +30,8 @@
         "seller": "Carlos Rivera",
         "postedDate": "2026-03-01",
         "premiumProducts": false,
-        "priceDiscount": 50
+        "priceDiscount": 50,
+        "image": "https://picsum.photos/seed/leather-wallet/400/300"
     },
     {
         "name": "JavaScript: The Good Parts",
@@ -38,7 +41,8 @@
         "rating": 4.4,
         "seller": "Marco Reyes",
         "postedDate": "2026-02-15",
-        "premiumProducts": false
+        "premiumProducts": false,
+        "image": "https://picsum.photos/seed/js-book/400/300"
     },
     {
         "name": "Succulent Planter Set",
@@ -48,7 +52,8 @@
         "rating": 4.3,
         "seller": "Isabel Cruz",
         "postedDate": "2026-03-05",
-        "premiumProducts": false
+        "premiumProducts": false,
+        "image": "https://picsum.photos/seed/succulent-planter/400/300"
     },
     {
         "name": "Beaded Bracelet Pack",
@@ -59,7 +64,8 @@
         "seller": "Diana Cruz",
         "postedDate": "2026-01-30",
         "premiumProducts": false,
-        "priceDiscount": 20
+        "priceDiscount": 20,
+        "image": "https://picsum.photos/seed/beaded-bracelet/400/300"
     },
     {
         "name": "Portable Bluetooth Speaker",
@@ -69,7 +75,8 @@
         "rating": 4.5,
         "seller": "Miguel Santos",
         "postedDate": "2026-02-28",
-        "premiumProducts": false
+        "premiumProducts": false,
+        "image": "https://picsum.photos/seed/bt-speaker/400/300"
     },
     {
         "name": "Arduino Starter Kit",
@@ -79,7 +86,8 @@
         "rating": 4.7,
         "seller": "Juan Dela Cruz",
         "postedDate": "2026-01-15",
-        "premiumProducts": false
+        "premiumProducts": false,
+        "image": "https://picsum.photos/seed/arduino-kit/400/300"
     },
     {
         "name": "Running Shoes Size 10",
@@ -90,7 +98,8 @@
         "seller": "Luis Garcia",
         "postedDate": "2026-03-12",
         "premiumProducts": false,
-        "priceDiscount": 200
+        "priceDiscount": 200,
+        "image": "https://picsum.photos/seed/running-shoes/400/300"
     },
     {
         "name": "Rattan Coffee Table",
@@ -100,7 +109,8 @@
         "rating": 4.6,
         "seller": "Diana Cruz",
         "postedDate": "2026-02-05",
-        "premiumProducts": false
+        "premiumProducts": false,
+        "image": "https://picsum.photos/seed/rattan-table/400/300"
     },
     {
         "name": "Wireless Noise-Cancelling Headphones",
@@ -110,7 +120,8 @@
         "rating": 4.8,
         "seller": "Sebastian Angelo Meer",
         "postedDate": "2026-03-18",
-        "premiumProducts": false
+        "premiumProducts": false,
+        "image": "https://picsum.photos/seed/noise-cancel-hp/400/300"
     },
     {
         "name": "Solid Wood Bookshelf",
@@ -120,7 +131,8 @@
         "rating": 4.5,
         "seller": "Patricia Lim",
         "postedDate": "2026-02-20",
-        "premiumProducts": false
+        "premiumProducts": false,
+        "image": "https://picsum.photos/seed/wood-bookshelf/400/300"
     },
     {
         "name": "Vintage Vinyl Record Player",
@@ -131,7 +143,8 @@
         "seller": "Sebastian Angelo Meer",
         "postedDate": "2026-01-10",
         "premiumProducts": false,
-        "priceDiscount": 500
+        "priceDiscount": 500,
+        "image": "https://picsum.photos/seed/vinyl-player/400/300"
     },
     {
         "name": "Mountain Bike 26-inch",
@@ -141,7 +154,8 @@
         "rating": 4.3,
         "seller": "Maria Santos",
         "postedDate": "2026-03-20",
-        "premiumProducts": false
+        "premiumProducts": false,
+        "image": "https://picsum.photos/seed/mountain-bike/400/300"
     },
     {
         "name": "Limited Edition Smartwatch",
@@ -152,6 +166,7 @@
         "seller": "Sebastian Angelo Meer",
         "postedDate": "2026-03-25",
         "premiumProducts": true,
-        "priceDiscount": 1000
+        "priceDiscount": 1000,
+        "image": "https://picsum.photos/seed/smartwatch-ltd/400/300"
     }
 ]

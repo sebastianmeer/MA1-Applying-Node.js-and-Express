@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const path = require('path');
 const productRouter = require('./routes/productRoutes');
+const authRouter = require('./routes/authRoutes');
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use('/api/auth', authRouter);
 app.use('/api/products', productRouter);
 
 app.use((req, res) => {

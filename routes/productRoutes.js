@@ -1,5 +1,6 @@
 const express = require('express');
 const productController = require('../controllers/productController');
+const { protect, restrictTo } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
@@ -14,12 +15,12 @@ router
 router
     .route('/')
     .get(productController.getAllProducts)
-    .post(productController.createProduct);
+    .post(protect, restrictTo('admin'), productController.createProduct);
 
 router
     .route('/:id')
     .get(productController.getProduct)
-    .patch(productController.updateProduct)
-    .delete(productController.deleteProduct);
+    .patch(protect, restrictTo('admin'), productController.updateProduct)
+    .delete(protect, restrictTo('admin'), productController.deleteProduct);
 
 module.exports = router;
