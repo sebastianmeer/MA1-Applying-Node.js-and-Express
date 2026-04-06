@@ -2,23 +2,7 @@
    Layout — Header, Footer, Sidebar, Grid Systems
    ══════════════════════════════════════════════════════════════════════════════ */
 
-/* ── Top Announcement Bar ────────────────────────────────────────────────────── */
-.top-bar {
-    background: var(--primary);
-    color: #fff;
-    padding: 1rem 0;
-    font-size: 1.2rem;
-}
-.top-bar__inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-.top-bar__promo { text-align: center; font-weight: 500; }
-.top-bar__promo a { color: var(--accent); text-decoration: underline; margin-left: 0.5rem; }
-.top-bar__social { display: flex; gap: 1.2rem; }
-.top-bar__social a { color: #fff; opacity: 0.8; }
-.top-bar__social a:hover { opacity: 1; color: var(--accent); }
+
 
 /* ── Header ──────────────────────────────────────────────────────────────────── */
 .header {
@@ -182,7 +166,6 @@
     .features-row { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 768px) {
-    .top-bar { display: none; }
     .header__nav { display: none; }
     .shop-layout { grid-template-columns: 1fr; }
     .sidebar { display: none; /* In a real app we'd add a mobile toggle */ }
