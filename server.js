@@ -1,20 +1,17 @@
-const dotenv = require('dotenv');
-dotenv.config({ path: './config.env' });
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, 'config.env') });
 
-const mongoose = require('mongoose');
+const connectDB = require('./db/connect');
 const app = require('./app');
 
-const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);
-
-mongoose
-    .connect(DB)
-    .then(() => console.log('DB connection successful!'))
+connectDB()
+    .then(() => {
+        const port = process.env.PORT || 3000;
+        app.listen(port, () => {
+            console.log(`App running on port ${port} in ${process.env.NODE_ENV} mode`);
+        });
+    })
     .catch((err) => {
         console.error('DB connection failed:', err.message);
         process.exit(1);
     });
-
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-    console.log(`App running on port ${port} in ${process.env.NODE_ENV} mode`);
-});

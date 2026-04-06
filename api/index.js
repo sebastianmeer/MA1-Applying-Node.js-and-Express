@@ -1,24 +1,23 @@
+const path = require('path');
+
+if (!process.env.DATABASE) {
+    require('dotenv').config({ path: path.join(__dirname, '..', 'config.env') });
+}
+
+const connectDB = require('../db/connect');
 const app = require('../app');
-const mongoose = require('mongoose');
 
-// Cached connection check
-const connectToDatabase = async () => {
-    if (mongoose.connection.readyState >= 1) {
-        return;
-    }
-    const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);
-    await mongoose.connect(DB, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    });
-};
-
-// Vercel Serverless Function Request Handler
 module.exports = async (req, res) => {
     try {
-        await connectToDatabase();
+        await connectDB();
         return app(req, res);
     } catch (err) {
-        res.status(500).json({ error: 'Database connection failed' });
+        console.error(err);
+        if (!res.headersSent) {
+            res.status(500).json({
+                status: 'error',
+                message: 'Database connection failed',
+            });
+        }
     }
 };
