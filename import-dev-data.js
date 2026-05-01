@@ -1,22 +1,20 @@
-const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const fs = require('fs');
+const path = require('path');
+const connectDB = require('./db/connect');
 const Product = require('./models/productModel');
 
 dotenv.config({ path: './config.env' });
 
-const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);
-
-mongoose.connect(DB).then(() => console.log('DB connection successful!'));
-
 const products = JSON.parse(
-    fs.readFileSync('./dev-data/products.json', 'utf-8')
+    fs.readFileSync(path.join(__dirname, 'dev-data/products.json'), 'utf-8')
 );
 
 const importData = async () => {
     try {
+        await connectDB();
         await Product.create(products);
-        console.log('Data successfully loaded!');
+        console.log('Data successfully loaded into marketplace.products!');
     } catch (err) {
         console.log(err);
     }
@@ -25,8 +23,9 @@ const importData = async () => {
 
 const deleteData = async () => {
     try {
+        await connectDB();
         await Product.deleteMany();
-        console.log('Data successfully deleted!');
+        console.log('Data successfully deleted from marketplace.products!');
     } catch (err) {
         console.log(err);
     }

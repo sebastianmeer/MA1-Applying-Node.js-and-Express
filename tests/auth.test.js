@@ -126,9 +126,9 @@ describe('POST /api/auth/login', () => {
 });
 
 describe('GET /api/products', () => {
-    it('no auth required, returns 200', async () => {
+    it('requires auth, returns 401 without token', async () => {
         const res = await request(app).get('/api/products');
-        expect(res.status).toBe(200);
+        expect(res.status).toBe(401);
     });
 });
 

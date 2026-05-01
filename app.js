@@ -1,8 +1,13 @@
 const express = require('express');
 const morgan = require('morgan');
 const path = require('path');
+const cookieParser = require('cookie-parser');
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
+const hpp = require('hpp');
 
-// Initialize environment variables if not present (usually for local development)
 if (!process.env.DATABASE) {
     require('dotenv').config({ path: path.join(__dirname, 'config.env') });
 }
@@ -10,54 +15,114 @@ if (!process.env.DATABASE) {
 const connectDB = require('./db/connect');
 const productRouter = require('./routes/productRoutes');
 const authRouter = require('./routes/authRoutes');
+const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
+
+app.use(
+    helmet({
+        contentSecurityPolicy: {
+            directives: {
+                defaultSrc: ["'self'"],
+                scriptSrc: [
+                    "'self'",
+                    "'unsafe-inline'",
+                    'https://unpkg.com',
+                    'https://cdn.tailwindcss.com',
+                ],
+                styleSrc: [
+                    "'self'",
+                    "'unsafe-inline'",
+                    'https://fonts.googleapis.com',
+                    'https://cdn.jsdelivr.net',
+                ],
+                fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+                imgSrc: ["'self'", 'data:', 'https:'],
+                connectSrc: ["'self'"],
+            },
+        },
+    })
+);
 
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
 
-app.use(express.json());
+const limiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    limit: 100,
+    standardHeaders: 'draft-8',
+    legacyHeaders: false,
+    message: {
+        status: 'fail',
+        message: 'Too many requests from this IP. Please try again in one hour.',
+    },
+});
+
+if (process.env.NODE_ENV !== 'test') {
+    app.use('/api', limiter);
+}
+app.use(express.json({ limit: '10kb' }));
+app.use(cookieParser());
+
+const makeSanitizedFieldsWritable = (req, res, next) => {
+    ['query', 'params'].forEach((field) => {
+        if (req[field] !== undefined) {
+            Object.defineProperty(req, field, {
+                value: req[field],
+                writable: true,
+                enumerable: true,
+                configurable: true,
+            });
+        }
+    });
+    next();
+};
+
+app.use(makeSanitizedFieldsWritable);
+app.use(mongoSanitize());
+app.use((req, res, next) => {
+    req.rawBody = req.body ? JSON.parse(JSON.stringify(req.body)) : {};
+    next();
+});
+app.use(xss());
+app.use(
+    hpp({
+        whitelist: ['price', 'rating'],
+    })
+);
 
 app.use((req, res, next) => {
     req.requestTime = new Date().toISOString();
     next();
 });
 
-// SERVERLESS DB CONNECTION:
-// Ensure database is connected for every request (uses Mongoose global cache to prevent leaks)
+if (process.env.TRIGGER_UNCAUGHT_EXCEPTION === 'true') {
+    app.use((req, res, next) => {
+        console.log(undefinedMiddlewareVariable);
+        next();
+    });
+}
+
 app.use(async (req, res, next) => {
     try {
         await connectDB();
         next();
     } catch (err) {
-        console.error('DB Connection error:', err);
-        return res.status(500).json({ error: 'Database connection failed' });
+        next(err);
     }
 });
 
-// API routes defined BEFORE static file serving to guarantee no path conflicts
 app.use('/api/auth', authRouter);
 app.use('/api/products', productRouter);
 
-// Static file serving
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use((req, res) => {
-    res.status(404).json({
-        status: 'fail',
-        message: `Cannot find ${req.originalUrl} on this server!`,
-    });
+app.use((req, res, next) => {
+    next(new AppError(`Cannot find ${req.originalUrl} on this server!`, 404));
 });
 
-// Start the server ONLY if not in a Vercel/Production environment
-if (process.env.NODE_ENV !== 'production') {
-    const port = process.env.PORT || 3000;
-    connectDB().then(() => {
-        app.listen(port, () => {
-            console.log(`App running on port ${port} in local mode (NODE_ENV=${process.env.NODE_ENV || 'undefined'})`);
-        });
-    }).catch(err => console.error('Local DB connection failed:', err));
-}
+app.use(globalErrorHandler);
 
 module.exports = app;

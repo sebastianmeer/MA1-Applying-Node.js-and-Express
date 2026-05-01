@@ -4,6 +4,8 @@ const { protect, restrictTo } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
+router.use(protect);
+
 router
     .route('/top-3-cheap')
     .get(productController.aliasTopCheapProducts, productController.getAllProducts);
@@ -15,12 +17,12 @@ router
 router
     .route('/')
     .get(productController.getAllProducts)
-    .post(protect, restrictTo('admin'), productController.createProduct);
+    .post(restrictTo('admin'), productController.createProduct);
 
 router
     .route('/:id')
     .get(productController.getProduct)
-    .patch(protect, restrictTo('admin'), productController.updateProduct)
-    .delete(protect, restrictTo('admin'), productController.deleteProduct);
+    .patch(restrictTo('admin'), productController.updateProduct)
+    .delete(restrictTo('admin'), productController.deleteProduct);
 
 module.exports = router;

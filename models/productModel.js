@@ -6,11 +6,13 @@ const productSchema = new mongoose.Schema(
         name: {
             type: String,
             required: [true, 'A product must have a name'],
+            unique: true,
             trim: true,
         },
         price: {
             type: Number,
             required: [true, 'A product must have a price'],
+            min: [0, 'A product price must be 0 or above'],
         },
         category: {
             type: String,
@@ -35,6 +37,7 @@ const productSchema = new mongoose.Schema(
         },
         postedDate: {
             type: Date,
+            required: [true, 'A product must have a posted date'],
         },
         productSlug: {
             type: String,
@@ -47,6 +50,13 @@ const productSchema = new mongoose.Schema(
             type: Number,
             validate: {
                 validator: function (val) {
+                    if (val === undefined || val === null) return true;
+                    if (this instanceof mongoose.Query) {
+                        const update = this.getUpdate();
+                        const updatedPrice = update.price || (update.$set && update.$set.price);
+                        if (updatedPrice === undefined || updatedPrice === null) return true;
+                        return val < updatedPrice;
+                    }
                     return val < this.price;
                 },
                 message: 'Discount price ({VALUE}) should be below the regular price',
@@ -82,6 +92,6 @@ productSchema.pre('aggregate', function () {
     this.pipeline().unshift({ $match: { premiumProducts: { $ne: true } } });
 });
 
-const Product = mongoose.model('Product', productSchema);
+const Product = mongoose.model('Product', productSchema, 'products');
 
 module.exports = Product;

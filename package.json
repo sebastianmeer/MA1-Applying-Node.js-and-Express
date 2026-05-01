@@ -6,8 +6,10 @@
     "scripts": {
         "start": "node server.js",
         "start:dev": "nodemon server.js",
-        "start:prod": "set NODE_ENV=production && nodemon server.js",
-        "test": "jest --testEnvironment node"
+        "start:prod": "set NODE_ENV=production && node server.js",
+        "test": "jest --testEnvironment node --runInBand",
+        "data:import": "node import-dev-data.js --import",
+        "data:delete": "node import-dev-data.js --delete"
     },
     "keywords": [
         "marketplace",
@@ -19,13 +21,21 @@
     "license": "ISC",
     "dependencies": {
         "bcryptjs": "^3.0.3",
+        "cookie-parser": "^1.4.7",
         "dotenv": "^17.3.1",
         "express": "^5.2.1",
+        "express-mongo-sanitize": "^2.2.0",
+        "express-rate-limit": "^8.4.1",
+        "helmet": "^8.1.0",
+        "hpp": "^0.2.3",
         "jsonwebtoken": "^9.0.3",
         "mongoose": "^9.3.1",
         "morgan": "^1.10.1",
+        "nodemailer": "^8.0.7",
         "nodemon": "^3.1.14",
-        "slugify": "^1.6.8"
+        "slugify": "^1.6.8",
+        "validator": "^13.15.35",
+        "xss-clean": "^0.1.4"
     },
     "devDependencies": {
         "fast-check": "^4.6.0",

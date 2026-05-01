@@ -1,97 +1,215 @@
+const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
+const AppError = require('../utils/appError');
+const catchAsync = require('../utils/catchAsync');
+const sendEmail = require('../utils/email');
 
 const signToken = (userId) =>
     jwt.sign({ id: userId }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN,
+        expiresIn: process.env.JWT_EXPIRES_IN || '7d',
     });
 
-exports.register = async (req, res) => {
-    try {
-        const { name, email, password, role } = req.body;
+const createSendToken = (user, statusCode, res) => {
+    const token = signToken(user._id);
+    const cookieExpiresIn = Number(process.env.JWT_COOKIE_EXPIRES_IN || 7);
 
-        // Validate required fields
-        if (!name || !email || !password) {
-            return res.status(400).json({
-                status: 'fail',
-                message: 'Please provide name, email and password',
-            });
-        }
+    const cookieOptions = {
+        expires: new Date(Date.now() + cookieExpiresIn * 24 * 60 * 60 * 1000),
+        httpOnly: true,
+        sameSite: 'lax',
+    };
 
-        // Validate role if provided
-        if (role !== undefined && role !== 'user' && role !== 'admin') {
-            return res.status(400).json({
-                status: 'fail',
-                message: "Role must be 'user' or 'admin'",
-            });
-        }
+    if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
-        const newUser = await User.create({ name, email, password, role });
+    res.cookie('jwt', token, cookieOptions);
 
-        const token = signToken(newUser._id);
+    const safeUser = {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        photo: user.photo,
+    };
 
-        res.status(201).json({
-            status: 'success',
-            token,
-            user: {
-                name: newUser.name,
-                email: newUser.email,
-                role: newUser.role,
-            },
-        });
-    } catch (err) {
-        // Duplicate email
-        if (err.code === 11000) {
-            return res.status(409).json({
-                status: 'fail',
-                message: 'Email already in use',
-            });
-        }
-        // Mongoose validation error (e.g. password too short)
-        if (err.name === 'ValidationError') {
-            return res.status(400).json({
-                status: 'fail',
-                message: err.message,
-            });
-        }
-        res.status(500).json({ status: 'fail', message: err.message });
-    }
+    res.status(statusCode).json({
+        status: 'success',
+        token,
+        user: safeUser,
+        data: {
+            user: safeUser,
+        },
+    });
 };
 
-exports.login = async (req, res) => {
+const filterObj = (obj, ...allowedFields) => {
+    const newObj = {};
+    Object.keys(obj).forEach((el) => {
+        if (allowedFields.includes(el)) newObj[el] = obj[el];
+    });
+    return newObj;
+};
+
+exports.signup = catchAsync(async (req, res, next) => {
+    const rawPassword = req.rawBody && req.rawBody.password;
+    if (typeof rawPassword === 'string' && rawPassword.length < 8) {
+        return next(new AppError('A password must have 8 characters or more', 400));
+    }
+
+    if (req.body.email) {
+        const existingUser = await User.findOne({ email: req.body.email });
+        if (existingUser) {
+            return next(new AppError(`Duplicate field value: ${req.body.email}. Please use another value.`, 409));
+        }
+    }
+
+    const newUser = await User.create({
+        name: req.body.name,
+        email: req.body.email,
+        photo: req.body.photo,
+        role: req.body.role,
+        password: req.body.password,
+        passwordConfirm: req.body.passwordConfirm || req.body.password,
+    });
+
+    createSendToken(newUser, 201, res);
+});
+
+exports.register = exports.signup;
+
+exports.login = catchAsync(async (req, res, next) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return next(new AppError('Please provide email and password', 400));
+    }
+
+    const user = await User.findOne({ email }).select('+password');
+
+    if (!user || !(await user.correctPassword(password, user.password))) {
+        return next(new AppError('Invalid credentials', 401));
+    }
+
+    createSendToken(user, 200, res);
+});
+
+exports.logout = (req, res) => {
+    res.cookie('jwt', 'loggedout', {
+        expires: new Date(Date.now() + 10 * 1000),
+        httpOnly: true,
+    });
+
+    res.status(200).json({ status: 'success' });
+};
+
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+    const user = await User.findOne({ email: req.body.email });
+
+    if (!user) {
+        return next(new AppError('There is no user with that email address.', 404));
+    }
+
+    const resetToken = user.createPasswordResetToken();
+    await user.save({ validateBeforeSave: false });
+
+    const resetURL = `${req.protocol}://${req.get('host')}/api/auth/resetPassword/${resetToken}`;
+    const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}\nIf you did not forget your password, please ignore this email.`;
+
     try {
-        const { email, password } = req.body;
-
-        // Validate required fields
-        if (!email || !password) {
-            return res.status(400).json({
-                status: 'fail',
-                message: 'Please provide email and password',
-            });
-        }
-
-        // Find user and include password field
-        const user = await User.findOne({ email }).select('+password');
-
-        if (!user || !(await user.correctPassword(password, user.password))) {
-            return res.status(401).json({
-                status: 'fail',
-                message: 'Invalid credentials',
-            });
-        }
-
-        const token = signToken(user._id);
+        await sendEmail({
+            email: user.email,
+            subject: 'Your password reset token is valid for 10 minutes',
+            message,
+        });
 
         res.status(200).json({
             status: 'success',
-            token,
-            user: {
-                name: user.name,
-                email: user.email,
-                role: user.role,
-            },
+            message: 'Token sent to email.',
+            resetToken: process.env.NODE_ENV === 'production' ? undefined : resetToken,
         });
     } catch (err) {
-        res.status(500).json({ status: 'fail', message: err.message });
+        user.passwordResetToken = undefined;
+        user.passwordResetExpires = undefined;
+        await user.save({ validateBeforeSave: false });
+
+        return next(new AppError('There was an error sending the email. Try again later.', 500));
     }
-};
+});
+
+exports.resetPassword = catchAsync(async (req, res, next) => {
+    const hashedToken = crypto
+        .createHash('sha256')
+        .update(req.params.token)
+        .digest('hex');
+
+    const user = await User.findOne({
+        passwordResetToken: hashedToken,
+        passwordResetExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+        return next(new AppError('Token is invalid or has expired', 400));
+    }
+
+    user.password = req.body.password;
+    user.passwordConfirm = req.body.passwordConfirm;
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save();
+
+    createSendToken(user, 200, res);
+});
+
+exports.updateMyPassword = catchAsync(async (req, res, next) => {
+    const user = await User.findById(req.user.id).select('+password');
+
+    if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
+        return next(new AppError('Your current password is wrong.', 401));
+    }
+
+    user.password = req.body.password;
+    user.passwordConfirm = req.body.passwordConfirm;
+    await user.save();
+
+    createSendToken(user, 200, res);
+});
+
+exports.getMe = catchAsync(async (req, res, next) => {
+    const user = await User.findById(req.user.id);
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+            user,
+        },
+    });
+});
+
+exports.updateMe = catchAsync(async (req, res, next) => {
+    if (req.body.password || req.body.passwordConfirm) {
+        return next(new AppError('This route is not for password updates. Please use /updateMyPassword.', 400));
+    }
+
+    const filteredBody = filterObj(req.body, 'name', 'email', 'photo');
+    const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
+        new: true,
+        runValidators: true,
+    });
+
+    res.status(200).json({
+        status: 'success',
+        user: updatedUser,
+        data: {
+            user: updatedUser,
+        },
+    });
+});
+
+exports.deleteMe = catchAsync(async (req, res, next) => {
+    await User.findByIdAndUpdate(req.user.id, { active: false });
+
+    res.status(204).json({
+        status: 'success',
+        data: null,
+    });
+});

@@ -79,6 +79,64 @@
         "image": "https://picsum.photos/seed/bt-speaker/400/300"
     },
     {
+        "name": "USB-C Travel Hub",
+        "price": 799,
+        "category": "Electronics",
+        "description": "6-in-1 hub with HDMI and USB ports.",
+        "rating": 4.4,
+        "seller": "Nico Flores",
+        "postedDate": "2026-03-03",
+        "premiumProducts": false,
+        "priceDiscount": 75,
+        "image": "https://picsum.photos/seed/usb-c-hub/400/300"
+    },
+    {
+        "name": "Paperback Mystery Novel",
+        "price": 220,
+        "category": "Books",
+        "description": "Like-new mystery novel paperback.",
+        "rating": 4.2,
+        "seller": "Elena Ramos",
+        "postedDate": "2026-02-11",
+        "premiumProducts": false,
+        "image": "https://picsum.photos/seed/mystery-novel/400/300"
+    },
+    {
+        "name": "Indoor Outdoor Basketball",
+        "price": 650,
+        "category": "Sports",
+        "description": "Size 7 basketball for indoor or outdoor.",
+        "rating": 4.3,
+        "seller": "Paolo Cruz",
+        "postedDate": "2026-03-09",
+        "premiumProducts": false,
+        "priceDiscount": 60,
+        "image": "https://picsum.photos/seed/basketball/400/300"
+    },
+    {
+        "name": "Non-slip Yoga Mat",
+        "price": 499,
+        "category": "Sports",
+        "description": "Yoga mat with strap and textured grip.",
+        "rating": 4.6,
+        "seller": "Grace Villanueva",
+        "postedDate": "2026-02-26",
+        "premiumProducts": false,
+        "image": "https://picsum.photos/seed/yoga-mat/400/300"
+    },
+    {
+        "name": "Beginner Python Workbook",
+        "price": 390,
+        "category": "Books",
+        "description": "Practice workbook for Python basics.",
+        "rating": 4.5,
+        "seller": "Mia Salazar",
+        "postedDate": "2026-01-29",
+        "premiumProducts": false,
+        "priceDiscount": 40,
+        "image": "https://picsum.photos/seed/python-workbook/400/300"
+    },
+    {
         "name": "Arduino Starter Kit",
         "price": 1200,
         "category": "Electronics",
