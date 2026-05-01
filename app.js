@@ -28,6 +28,7 @@ app.use(
                 scriptSrc: [
                     "'self'",
                     "'unsafe-inline'",
+                    "'unsafe-eval'",
                     'https://unpkg.com',
                     'https://cdn.tailwindcss.com',
                 ],
@@ -105,19 +106,20 @@ if (process.env.TRIGGER_UNCAUGHT_EXCEPTION === 'true') {
     });
 }
 
-app.use(async (req, res, next) => {
+const ensureDatabaseConnection = async (req, res, next) => {
     try {
         await connectDB();
         next();
     } catch (err) {
         next(err);
     }
-});
-
-app.use('/api/auth', authRouter);
-app.use('/api/products', productRouter);
+};
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/api', ensureDatabaseConnection);
+app.use('/api/auth', authRouter);
+app.use('/api/products', productRouter);
 
 app.use((req, res, next) => {
     next(new AppError(`Cannot find ${req.originalUrl} on this server!`, 404));

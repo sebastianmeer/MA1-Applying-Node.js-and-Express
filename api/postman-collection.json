@@ -1,0 +1,402 @@
+{
+  "info": {
+    "name": "Marketplace API - GT2 Tests",
+    "description": "Postman collection covering GT2A (CRUD), GT2B (API Queries), GT2C (Aggregation, Middleware, Validators), and GT2D (Error Handling)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GT2A - MongoDB Testing (CRUD)",
+      "item": [
+        {
+          "name": "Post 1 - Create Product (iPhone 14 Pro)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"iPhone 14 Pro\",\n  \"price\": 1899,\n  \"category\": \"Cellphone\",\n  \"description\": \"phone long\",\n  \"seller\": \"ako\",\n  \"postedDate\": \"2026-01-01\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "v1", "products"]
+            }
+          }
+        },
+        {
+          "name": "Post 2 - Create Product (iPhone 14 Pro Max)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"iPhone 14 Pro Max\",\n  \"price\": 2099,\n  \"category\": \"Cellphone\",\n  \"description\": \"phone lang din\",\n  \"seller\": \"ako din\",\n  \"postedDate\": \"2026-01-02\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "v1", "products"]
+            }
+          }
+        },
+        {
+          "name": "Get - Get All Products",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/v1/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "v1", "products"]
+            }
+          }
+        },
+        {
+          "name": "Patch - Update Product Price (replace :id)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 899.60\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/products/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "v1", "products", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "REPLACE_WITH_PRODUCT_ID",
+                  "description": "Replace with a valid MongoDB ObjectId from a created product"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete - Delete Product (replace :id)",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:3000/api/v1/products/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "v1", "products", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "REPLACE_WITH_PRODUCT_ID",
+                  "description": "Replace with a valid MongoDB ObjectId from a created product"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "GT2B - Applying API Queries",
+      "item": [
+        {
+          "name": "Aliasing - Top 3 Cheapest Products",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://127.0.0.1:3000/api/v1/products/top-3-cheapest",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "3000",
+              "path": ["api", "v1", "products", "top-3-cheapest"]
+            }
+          }
+        },
+        {
+          "name": "Filtering - By Category (Electronics)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://127.0.0.1:3000/api/v1/products?category=Electronics",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "3000",
+              "path": ["api", "v1", "products"],
+              "query": [
+                { "key": "category", "value": "Electronics" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Sorting - By Price Ascending",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://127.0.0.1:3000/api/v1/products?sort=-price",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "3000",
+              "path": ["api", "v1", "products"],
+              "query": [
+                { "key": "sort", "value": "-price" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Field Limiting - Only name, price, category",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://127.0.0.1:3000/api/v1/products?fields=name,price,category",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "3000",
+              "path": ["api", "v1", "products"],
+              "query": [
+                { "key": "fields", "value": "name,price,category" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Pagination - Page 1, Limit 5",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://127.0.0.1:3000/api/v1/products?page=1&limit=5",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "3000",
+              "path": ["api", "v1", "products"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "5" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "GT2C - Aggregation, Middleware, Validators",
+      "item": [
+        {
+          "name": "Post - Test Document Middleware & Virtual Property",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Standard Keyboard\",\n  \"price\": 800,\n  \"category\": \"Electronics\",\n  \"description\": \"A normal keyboard.\",\n  \"seller\": \"Tech Buddy\",\n  \"postedDate\": \"2019-01-01T00:00:000Z\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "v1", "products"]
+            }
+          }
+        },
+        {
+          "name": "Post - Test Built-in Validator (Description Too Long)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Long Description Item\",\n  \"price\": 500,\n  \"category\": \"Misc\",\n  \"seller\": \"Test Seller\",\n  \"postedDate\": \"2026-01-01\",\n  \"description\": \"This description is intentionally made to be way over fifty characters long to trigger the built-in mongoose validation error.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "v1", "products"]
+            }
+          }
+        },
+        {
+          "name": "Post - Test Custom Validator (Price Discount >= Price)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Discounted Shoes\",\n  \"price\": 1000,\n  \"category\": \"Clothes\",\n  \"description\": \"Nice shoes.\",\n  \"seller\": \"Shoe Store\",\n  \"postedDate\": \"2026-01-01\",\n  \"priceDiscount\": 1500\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "v1", "products"]
+            }
+          }
+        },
+        {
+          "name": "Post - Add a Premium Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Luxury Gold Watch\",\n  \"price\": 50000,\n  \"category\": \"Clothes\",\n  \"description\": \"18k gold plated.\",\n  \"seller\": \"Classy Finds\",\n  \"postedDate\": \"2024-01-10T00:00:00.000Z\",\n  \"premiumProducts\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "v1", "products"]
+            }
+          }
+        },
+        {
+          "name": "Get - Test Query Middleware (premiumProducts hidden)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/v1/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "v1", "products"]
+            }
+          }
+        },
+        {
+          "name": "Get - Test Aggregation Pipeline & Aggregate Middleware",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/v1/products/product-category",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "v1", "products", "product-category"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "GT2D - Error Handling",
+      "item": [
+        {
+          "name": "Handle Invalid DB ID - Incorrect ID Format",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/v1/products/12345",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "v1", "products", "12345"]
+            }
+          }
+        },
+        {
+          "name": "Handle Invalid DB ID - Correct Format but Does Not Exist",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/v1/products/000fa2c3c4d5e6f7a8b9c0d0",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "v1", "products", "000fa2c3c4d5e6f7a8b9c0d0"]
+            }
+          }
+        },
+        {
+          "name": "Handle Duplicate DB Field - Duplicate Product Name",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Second-hand Laptop\",\n  \"price\": 15000,\n  \"category\": \"Electronics\",\n  \"seller\": \"Juan Dela Cruz\",\n  \"postedDate\": \"2026-01-01\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "v1", "products"]
+            }
+          }
+        },
+        {
+          "name": "Handle Mongoose Validation Error - Missing Price & Long Description",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"A Brand New Test Product\",\n  \"category\": \"Books\",\n  \"seller\": \"Keith\",\n  \"postedDate\": \"2026-01-01\",\n  \"description\": \"This description is intentionally made to be very long so that it exceeds the fifty character maximum limit we set in the schema.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/v1/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "v1", "products"]
+            }
+          }
+        },
+        {
+          "name": "Uncaught Exception - Trigger ReferenceError (GET /products/)",
+          "request": {
+            "method": "GET",
+            "description": "This triggers an uncaught exception if the controller references an undefined variable (e.g., 'x is not defined'). Requires a deliberate bug in the controller for testing.",
+            "url": {
+              "raw": "http://localhost:3000/api/v1/products/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "v1", "products", ""]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
