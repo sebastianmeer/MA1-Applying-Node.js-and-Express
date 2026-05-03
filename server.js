@@ -12,15 +12,6 @@ const app = require('./app');
 
 let server;
 
-(async () => {
-    await connectDB();
-
-    const port = process.env.PORT || 3000;
-    server = app.listen(port, () => {
-        console.log(`App running on port ${port} in ${process.env.NODE_ENV} mode`);
-    });
-})();
-
 process.on('unhandledRejection', (err) => {
     console.log('UNHANDLED REJECTION! Shutting down...');
     console.log(err.name, err.message);
@@ -30,3 +21,12 @@ process.on('unhandledRejection', (err) => {
         process.exit(1);
     }
 });
+
+(async () => {
+    await connectDB();
+
+    const port = process.env.PORT || 3000;
+    server = app.listen(port, () => {
+        console.log(`App running on port ${port} in ${process.env.NODE_ENV} mode`);
+    });
+})();

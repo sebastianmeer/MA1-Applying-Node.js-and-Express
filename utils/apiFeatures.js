@@ -1,3 +1,6 @@
+const normalizeQueryValue = (value) =>
+    Array.isArray(value) ? value[value.length - 1] : value;
+
 class APIFeatures {
     constructor(query, queryString) {
         this.query = query;
@@ -8,6 +11,10 @@ class APIFeatures {
         const queryObj = { ...this.queryString };
         const excludedFields = ['page', 'sort', 'limit', 'fields'];
         excludedFields.forEach((el) => delete queryObj[el]);
+
+        Object.keys(queryObj).forEach((key) => {
+            queryObj[key] = normalizeQueryValue(queryObj[key]);
+        });
 
         let queryStr = JSON.stringify(queryObj);
         queryStr = queryStr.replace(
@@ -21,8 +28,10 @@ class APIFeatures {
     }
 
     sort() {
-        if (this.queryString.sort) {
-            const sortBy = this.queryString.sort.split(',').join(' ');
+        const sort = normalizeQueryValue(this.queryString.sort);
+
+        if (sort) {
+            const sortBy = sort.split(',').join(' ');
             this.query = this.query.sort(sortBy);
         } else {
             this.query = this.query.sort('-createdAt');
@@ -32,8 +41,10 @@ class APIFeatures {
     }
 
     limitFields() {
-        if (this.queryString.fields) {
-            const fields = this.queryString.fields.split(',').join(' ');
+        const selectedFields = normalizeQueryValue(this.queryString.fields);
+
+        if (selectedFields) {
+            const fields = selectedFields.split(',').join(' ');
             this.query = this.query.select(fields);
         } else {
             this.query = this.query.select('-__v');
@@ -43,8 +54,8 @@ class APIFeatures {
     }
 
     paginate() {
-        const page = this.queryString.page * 1 || 1;
-        const limit = this.queryString.limit * 1 || 100;
+        const page = normalizeQueryValue(this.queryString.page) * 1 || 1;
+        const limit = normalizeQueryValue(this.queryString.limit) * 1 || 100;
         const skip = (page - 1) * limit;
 
         this.query = this.query.skip(skip).limit(limit);

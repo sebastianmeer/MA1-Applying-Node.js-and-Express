@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 
+const setProductSlug = (product) => {
+    if (product.name) {
+        product.productSlug = slugify(product.name, { lower: false }).toUpperCase();
+    }
+};
+
 const productSchema = new mongoose.Schema(
     {
         name: {
@@ -19,52 +25,56 @@ const productSchema = new mongoose.Schema(
             required: [true, 'A product must have a category'],
             trim: true,
         },
-        description: {
-            type: String,
-            trim: true,
-            maxlength: [50, 'A product description must have 50 characters or less'],
-        },
-        rating: {
-            type: Number,
-            default: 4.5,
-            min: [1, 'Rating must be above 1.0'],
-            max: [5, 'Rating must be below 5.0'],
-        },
         seller: {
             type: String,
             required: [true, 'A product must have a seller'],
             trim: true,
         },
+        image: {
+            type: String,
+            default: 'https://placehold.co/400x300/e2e8f0/64748b?text=No+Image',
+            trim: true,
+        },
+        quantity: {
+            type: String,
+            default: '1 item',
+            trim: true,
+        },
+        organic: {
+            type: Boolean,
+            default: false,
+        },
+        description: {
+            type: String,
+            trim: true,
+            maxlength: [50, 'A product description must have 50 characters or less'],
+        },
         postedDate: {
             type: Date,
-            required: [true, 'A product must have a posted date'],
+            default: Date.now,
         },
-        productSlug: {
-            type: String,
-        },
+        productSlug: String,
         premiumProducts: {
             type: Boolean,
             default: false,
+            select: false,
         },
         priceDiscount: {
             type: Number,
             validate: {
                 validator: function (val) {
                     if (val === undefined || val === null) return true;
-                    if (this instanceof mongoose.Query) {
-                        const update = this.getUpdate();
-                        const updatedPrice = update.price || (update.$set && update.$set.price);
-                        if (updatedPrice === undefined || updatedPrice === null) return true;
-                        return val < updatedPrice;
-                    }
-                    return val < this.price;
+
+                    const update = this instanceof mongoose.Query ? this.getUpdate() : null;
+                    const price = update
+                        ? update.price || (update.$set && update.$set.price)
+                        : this.price;
+
+                    if (price === undefined || price === null) return true;
+                    return val < price;
                 },
                 message: 'Discount price ({VALUE}) should be below the regular price',
             },
-        },
-        image: {
-            type: String,
-            default: 'https://placehold.co/400x300/e2e8f0/64748b?text=No+Image',
         },
     },
     {
@@ -74,6 +84,8 @@ const productSchema = new mongoose.Schema(
     }
 );
 
+productSchema.index({ price: 1, name: 1 });
+
 productSchema.virtual('daysPosted').get(function () {
     if (!this.postedDate) return null;
     const diffMs = Date.now() - this.postedDate.getTime();
@@ -81,7 +93,17 @@ productSchema.virtual('daysPosted').get(function () {
 });
 
 productSchema.pre('save', function () {
-    this.productSlug = slugify(this.name, { lower: false }).toUpperCase();
+    setProductSlug(this);
+});
+
+productSchema.pre('insertMany', function (next, docs) {
+    const documents = Array.isArray(docs) ? docs : next;
+
+    if (Array.isArray(documents)) {
+        documents.forEach(setProductSlug);
+    }
+
+    if (typeof next === 'function') next();
 });
 
 productSchema.pre(/^find/, function () {

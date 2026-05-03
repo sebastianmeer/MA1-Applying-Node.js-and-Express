@@ -20,6 +20,8 @@ const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
 
+app.set('query parser', 'extended');
+
 app.use(
     helmet({
         contentSecurityPolicy: {
@@ -28,8 +30,6 @@ app.use(
                 scriptSrc: [
                     "'self'",
                     "'unsafe-inline'",
-                    "'unsafe-eval'",
-                    'https://unpkg.com',
                     'https://cdn.tailwindcss.com',
                 ],
                 styleSrc: [
@@ -120,6 +120,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', ensureDatabaseConnection);
 app.use('/api/auth', authRouter);
 app.use('/api/products', productRouter);
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/products', productRouter);
 
 app.use((req, res, next) => {
     next(new AppError(`Cannot find ${req.originalUrl} on this server!`, 404));
