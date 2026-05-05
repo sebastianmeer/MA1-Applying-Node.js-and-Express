@@ -7,16 +7,8 @@ const router = express.Router();
 router.use(protect);
 
 router
-    .route('/top-3-cheap')
-    .get(productController.aliasTopCheapProducts, productController.getAllProducts);
-
-router
     .route('/top-3-cheapest')
     .get(productController.aliasTopCheapProducts, productController.getAllProducts);
-
-router
-    .route('/top-5-cheap')
-    .get(productController.aliasTopFiveCheapProducts, productController.getAllProducts);
 
 router
     .route('/product-category')

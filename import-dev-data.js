@@ -7,7 +7,7 @@ const Product = require('./models/productModel');
 dotenv.config({ path: './config.env' });
 
 const products = JSON.parse(
-    fs.readFileSync(path.join(__dirname, 'dev-data/data/products.json'), 'utf-8')
+    fs.readFileSync(path.join(__dirname, 'data/products.json'), 'utf-8')
 );
 
 const importData = async () => {

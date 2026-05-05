@@ -1,4 +1,5 @@
 node_modules
+client/dist
 *.log
 npm-debug.log*
 config.env

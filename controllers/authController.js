@@ -51,11 +51,6 @@ const filterObj = (obj, ...allowedFields) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-    const rawPassword = req.rawBody && req.rawBody.password;
-    if (typeof rawPassword === 'string' && rawPassword.length < 8) {
-        return next(new AppError('A password must have 8 characters or more', 400));
-    }
-
     if (req.body.email) {
         const existingUser = await User.findOne({ email: req.body.email });
         if (existingUser) {

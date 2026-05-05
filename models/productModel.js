@@ -3,9 +3,12 @@ const slugify = require('slugify');
 
 const setProductSlug = (product) => {
     if (product.name) {
-        product.productSlug = slugify(product.name, { lower: false }).toUpperCase();
+        product.productSlug = buildProductSlug(product.name);
     }
 };
+
+const buildProductSlug = (name) =>
+    slugify(name, { lower: false }).toUpperCase();
 
 const productSchema = new mongoose.Schema(
     {
@@ -14,35 +17,29 @@ const productSchema = new mongoose.Schema(
             required: [true, 'A product must have a name'],
             unique: true,
             trim: true,
+            minlength: [3, 'A product name must have at least 3 characters'],
+            maxlength: [80, 'A product name must have 80 characters or less'],
         },
         price: {
             type: Number,
             required: [true, 'A product must have a price'],
-            min: [0, 'A product price must be 0 or above'],
+            min: [1, 'A product price must be at least 1'],
         },
         category: {
             type: String,
             required: [true, 'A product must have a category'],
             trim: true,
+            enum: {
+                values: ['Electronics', 'Clothes', 'Books', 'Food', 'Home', 'Services', 'Sports', 'Others'],
+                message: 'Category must be Electronics, Clothes, Books, Food, Home, Services, Sports, or Others',
+            },
         },
         seller: {
             type: String,
             required: [true, 'A product must have a seller'],
             trim: true,
-        },
-        image: {
-            type: String,
-            default: 'https://placehold.co/400x300/e2e8f0/64748b?text=No+Image',
-            trim: true,
-        },
-        quantity: {
-            type: String,
-            default: '1 item',
-            trim: true,
-        },
-        organic: {
-            type: Boolean,
-            default: false,
+            minlength: [2, 'A seller name must have at least 2 characters'],
+            maxlength: [80, 'A seller name must have 80 characters or less'],
         },
         description: {
             type: String,
@@ -61,6 +58,7 @@ const productSchema = new mongoose.Schema(
         },
         priceDiscount: {
             type: Number,
+            min: [0, 'Discount price cannot be negative'],
             validate: {
                 validator: function (val) {
                     if (val === undefined || val === null) return true;
@@ -94,6 +92,21 @@ productSchema.virtual('daysPosted').get(function () {
 
 productSchema.pre('save', function () {
     setProductSlug(this);
+});
+
+productSchema.pre('findOneAndUpdate', function () {
+    const update = this.getUpdate();
+    const name = update.name || (update.$set && update.$set.name);
+
+    if (!name) return;
+
+    if (update.$set) {
+        update.$set.productSlug = buildProductSlug(name);
+    } else {
+        update.productSlug = buildProductSlug(name);
+    }
+
+    this.setUpdate(update);
 });
 
 productSchema.pre('insertMany', function (next, docs) {

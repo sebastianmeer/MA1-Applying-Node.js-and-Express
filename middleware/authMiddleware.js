@@ -4,17 +4,32 @@ const User = require('../models/userModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
+const cleanToken = (rawToken) =>
+    rawToken
+        .trim()
+        .replace(/^Bearer\s+/i, '')
+        .replace(/^["']|["']$/g, '')
+        .trim();
+
 const protect = catchAsync(async (req, res, next) => {
     let token;
 
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-        token = req.headers.authorization.split(' ')[1];
+        token = cleanToken(req.headers.authorization);
     } else if (req.cookies && req.cookies.jwt) {
-        token = req.cookies.jwt;
+        token = cleanToken(req.cookies.jwt);
     }
 
     if (!token) {
         return next(new AppError('You are not logged in. Please log in to get access.', 401));
+    }
+
+    if (token.includes('{{') || token.includes('}}')) {
+        return next(new AppError('Postman did not resolve your token variable. Log in or sign up, then paste the returned JWT as the Bearer Token value.', 401));
+    }
+
+    if (token === 'undefined' || token === 'null' || token.split('.').length !== 3) {
+        return next(new AppError('The Bearer Token value is not a JWT. Use only the token string returned by login or signup, without quotes and without another Bearer prefix.', 401));
     }
 
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);

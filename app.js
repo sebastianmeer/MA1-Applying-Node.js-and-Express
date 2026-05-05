@@ -1,6 +1,4 @@
 const express = require('express');
-const morgan = require('morgan');
-const path = require('path');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
@@ -9,6 +7,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 
 if (!process.env.DATABASE) {
+    const path = require('path');
     require('dotenv').config({ path: path.join(__dirname, 'config.env') });
 }
 
@@ -47,6 +46,7 @@ app.use(
 );
 
 if (process.env.NODE_ENV === 'development') {
+    const morgan = require('morgan');
     app.use(morgan('dev'));
 }
 
@@ -84,13 +84,15 @@ const makeSanitizedFieldsWritable = (req, res, next) => {
 app.use(makeSanitizedFieldsWritable);
 app.use(mongoSanitize());
 app.use((req, res, next) => {
-    req.rawBody = req.body ? JSON.parse(JSON.stringify(req.body)) : {};
+    if (typeof req.body?.password === 'string' && req.body.password.length < 8) {
+        return next(new AppError('A password must have 8 characters or more', 400));
+    }
     next();
 });
 app.use(xss());
 app.use(
     hpp({
-        whitelist: ['price', 'rating'],
+        whitelist: ['price', 'priceDiscount', 'category', 'seller', 'name', 'postedDate'],
     })
 );
 
@@ -98,13 +100,6 @@ app.use((req, res, next) => {
     req.requestTime = new Date().toISOString();
     next();
 });
-
-if (process.env.TRIGGER_UNCAUGHT_EXCEPTION === 'true') {
-    app.use((req, res, next) => {
-        console.log(undefinedMiddlewareVariable);
-        next();
-    });
-}
 
 const ensureDatabaseConnection = async (req, res, next) => {
     try {
@@ -114,8 +109,6 @@ const ensureDatabaseConnection = async (req, res, next) => {
         next(err);
     }
 };
-
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api', ensureDatabaseConnection);
 app.use('/api/auth', authRouter);

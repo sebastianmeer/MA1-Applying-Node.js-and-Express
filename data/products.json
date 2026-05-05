@@ -1,0 +1,138 @@
+[
+  {
+    "name": "Paperback Cookbook",
+    "price": 100,
+    "category": "Books",
+    "description": "Simple home recipes.",
+    "seller": "Mia Cruz",
+    "postedDate": "2026-01-01T00:00:00.000Z",
+    "priceDiscount": 80
+  },
+  {
+    "name": "Study Guide Set",
+    "price": 180,
+    "category": "Books",
+    "description": "Clean guides for review.",
+    "seller": "Jules Ramos",
+    "postedDate": "2026-01-02T00:00:00.000Z",
+    "priceDiscount": 150
+  },
+  {
+    "name": "Premium Book Box",
+    "price": 50,
+    "category": "Books",
+    "description": "Premium hidden bundle.",
+    "seller": "Admin Seller",
+    "postedDate": "2026-01-03T00:00:00.000Z",
+    "premiumProducts": true,
+    "priceDiscount": 40
+  },
+  {
+    "name": "Wireless Mouse",
+    "price": 250,
+    "category": "Electronics",
+    "description": "Compact USB wireless mouse.",
+    "seller": "Ana Lim",
+    "postedDate": "2026-01-04T00:00:00.000Z",
+    "priceDiscount": 220
+  },
+  {
+    "name": "Bluetooth Speaker",
+    "price": 700,
+    "category": "Electronics",
+    "description": "Clear portable speaker.",
+    "seller": "Paolo Tan",
+    "postedDate": "2026-01-05T00:00:00.000Z",
+    "priceDiscount": 650
+  },
+  {
+    "name": "Used Study Lamp",
+    "price": 250,
+    "category": "Home",
+    "description": "Desk lamp with warm light.",
+    "seller": "Nico Reyes",
+    "postedDate": "2026-01-06T00:00:00.000Z",
+    "priceDiscount": 210
+  },
+  {
+    "name": "Ceramic Mug Pair",
+    "price": 160,
+    "category": "Home",
+    "description": "Two clean ceramic mugs.",
+    "seller": "Liza Santos",
+    "postedDate": "2026-01-07T00:00:00.000Z",
+    "priceDiscount": 130
+  },
+  {
+    "name": "Canvas Backpack",
+    "price": 500,
+    "category": "Clothes",
+    "description": "Durable everyday backpack.",
+    "seller": "Leo Santos",
+    "postedDate": "2026-01-08T00:00:00.000Z",
+    "priceDiscount": 450
+  },
+  {
+    "name": "Denim Jacket",
+    "price": 850,
+    "category": "Clothes",
+    "description": "Lightly used denim jacket.",
+    "seller": "Ira Gomez",
+    "postedDate": "2026-01-09T00:00:00.000Z",
+    "priceDiscount": 790
+  },
+  {
+    "name": "Yoga Blocks Pair",
+    "price": 900,
+    "category": "Sports",
+    "description": "Foam blocks for yoga.",
+    "seller": "Rosa Diaz",
+    "postedDate": "2026-01-10T00:00:00.000Z",
+    "priceDiscount": 820
+  },
+  {
+    "name": "Jump Rope",
+    "price": 120,
+    "category": "Sports",
+    "description": "Adjustable fitness rope.",
+    "seller": "Mark Dela Cruz",
+    "postedDate": "2026-01-11T00:00:00.000Z",
+    "priceDiscount": 95
+  },
+  {
+    "name": "Wooden Side Table",
+    "price": 950,
+    "category": "Home",
+    "description": "Small side table in acacia.",
+    "seller": "Ben Garcia",
+    "postedDate": "2026-01-12T00:00:00.000Z",
+    "priceDiscount": 900
+  },
+  {
+    "name": "Folding Chair",
+    "price": 650,
+    "category": "Home",
+    "description": "Light chair for small rooms.",
+    "seller": "Tess Rivera",
+    "postedDate": "2026-01-13T00:00:00.000Z",
+    "priceDiscount": 590
+  },
+  {
+    "name": "Mango Pack",
+    "price": 220,
+    "category": "Food",
+    "description": "Sweet mangoes from farms.",
+    "seller": "Local Farm",
+    "postedDate": "2026-01-14T00:00:00.000Z",
+    "priceDiscount": 190
+  },
+  {
+    "name": "Calamansi Basket",
+    "price": 140,
+    "category": "Food",
+    "description": "Tangy citrus for drinks.",
+    "seller": "Local Farm",
+    "postedDate": "2026-01-15T00:00:00.000Z",
+    "priceDiscount": 110
+  }
+]

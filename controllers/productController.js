@@ -1,42 +1,20 @@
 const Product = require('../models/productModel');
+const APIFeatures = require('../utils/apiFeatures');
+const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
-const factory = require('./handlerFactory');
-
-const productControllerOptions = {
-    docName: 'product',
-    collectionName: 'products',
-    notFoundMessage: 'No product found with that ID',
-};
 
 exports.aliasTopCheapProducts = (req, res, next) => {
     req._queryDefaults = {
         limit: '3',
         sort: 'price',
-        fields: 'name,price,category,seller,image,quantity,organic,description',
+        fields: 'name,price,category,seller,postedDate,priceDiscount,productSlug',
     };
     next();
 };
-
-exports.aliasTopFiveCheapProducts = (req, res, next) => {
-    req._queryDefaults = {
-        limit: '5',
-        sort: 'price,name',
-        fields: 'name,price,category,seller,image,quantity,organic,description',
-    };
-    next();
-};
-
-exports.getAllProducts = factory.getAll(Product, productControllerOptions);
-exports.getProduct = factory.getOne(Product, productControllerOptions);
-exports.createProduct = factory.createOne(Product, productControllerOptions);
-exports.updateProduct = factory.updateOne(Product, productControllerOptions);
-exports.deleteProduct = factory.deleteOne(Product, productControllerOptions);
 
 exports.getProductCategoryStats = catchAsync(async (req, res, next) => {
     const stats = await Product.aggregate([
-        {
-            $match: { price: { $lt: 1000 } },
-        },
+        { $match: { price: { $lt: 1000 } } },
         {
             $group: {
                 _id: '$category',
@@ -60,21 +38,85 @@ exports.getProductCategoryStats = catchAsync(async (req, res, next) => {
                 avgPrice: { $round: ['$avgPrice', 2] },
             },
         },
-        {
-            $project: {
-                _id: 0,
-            },
-        },
-        {
-            $sort: { avgPrice: 1 },
-        },
+        { $project: { _id: 0 } },
+        { $sort: { avgPrice: 1 } },
     ]);
 
     res.status(200).json({
         status: 'success',
         results: stats.length,
-        data: {
-            stats,
-        },
+        data: { stats },
+    });
+});
+
+exports.getAllProducts = catchAsync(async (req, res, next) => {
+    const queryString = {
+        ...req.query,
+        ...(req._queryDefaults || {}),
+    };
+
+    const features = new APIFeatures(Product.find(), queryString)
+        .filter()
+        .sort()
+        .limitFields()
+        .paginate();
+
+    const products = await features.query;
+
+    res.status(200).json({
+        status: 'success',
+        results: products.length,
+        data: { products },
+    });
+});
+
+exports.getProduct = catchAsync(async (req, res, next) => {
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+        return next(new AppError('No product found with that ID', 404));
+    }
+
+    res.status(200).json({
+        status: 'success',
+        data: { product },
+    });
+});
+
+exports.createProduct = catchAsync(async (req, res, next) => {
+    const product = await Product.create(req.body);
+
+    res.status(201).json({
+        status: 'success',
+        data: { product },
+    });
+});
+
+exports.updateProduct = catchAsync(async (req, res, next) => {
+    const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+        returnDocument: 'after',
+        runValidators: true,
+    });
+
+    if (!product) {
+        return next(new AppError('No product found with that ID', 404));
+    }
+
+    res.status(200).json({
+        status: 'success',
+        data: { product },
+    });
+});
+
+exports.deleteProduct = catchAsync(async (req, res, next) => {
+    const product = await Product.findByIdAndDelete(req.params.id);
+
+    if (!product) {
+        return next(new AppError('No product found with that ID', 404));
+    }
+
+    res.status(204).json({
+        status: 'success',
+        data: null,
     });
 });
