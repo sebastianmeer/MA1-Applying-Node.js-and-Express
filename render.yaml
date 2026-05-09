@@ -3,7 +3,7 @@ services:
     name: marketplace
     runtime: node
     plan: free
-    buildCommand: npm install && npm --prefix client install && npm run client:build
+    buildCommand: npm install && npm --prefix client install --include=dev && npm run client:build
     startCommand: npm start
     healthCheckPath: /
     envVars:
