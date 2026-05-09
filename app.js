@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
@@ -7,7 +8,6 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 
 if (!process.env.DATABASE) {
-    const path = require('path');
     require('dotenv').config({ path: path.join(__dirname, 'config.env') });
 }
 
@@ -115,6 +115,13 @@ app.use('/api/auth', authRouter);
 app.use('/api/products', productRouter);
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/products', productRouter);
+
+const clientBuildPath = path.join(__dirname, 'client', 'dist');
+app.use(express.static(clientBuildPath));
+
+app.get(/^\/(?!api).*/, (req, res) => {
+    res.sendFile(path.join(clientBuildPath, 'index.html'));
+});
 
 app.use((req, res, next) => {
     next(new AppError(`Cannot find ${req.originalUrl} on this server!`, 404));
