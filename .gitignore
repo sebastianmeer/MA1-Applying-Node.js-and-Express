@@ -5,6 +5,4 @@ npm-debug.log*
 config.env
 .env
 .DS_Store
-.vscode
-.kiro
-.config.kiro
+
